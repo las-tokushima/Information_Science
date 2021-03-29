@@ -1,1 +1,3 @@
-# Information_Science
+# 情報科学入門 統計・データサイエンス・AI (技術評論社)
+https://gihyo.jp/dp/ebook/2021/978-4-297-12040-5
+
