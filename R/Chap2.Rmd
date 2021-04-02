@@ -1,0 +1,122 @@
+---
+title: "Chapter2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## RとPythonを使ったグラフの作成
+
+
+```{r}
+# p.61
+# 棒グラフ（割合）
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  select(pclass, survived) %>%
+  table() %>%
+  as.data.frame() %>%
+  ggplot(aes(x = pclass, y = Freq, fill = survived)) +
+  geom_bar(stat = "identity", alpha = 0.75, position = "fill") +
+  scale_y_continuous(labels = percent)
+```
+
+```{r}
+# p.63
+# 棒グラフ（実数）
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  select(pclass, survived) %>%
+  table() %>%
+  as.data.frame() %>%
+  ggplot(aes(x = pclass, y = Freq, fill = survived)) +
+  geom_bar(stat = "identity", alpha = 0.75)
+```
+
+```{r}
+# p.65
+# 箱ひげ図
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  drop_na(age) %>%
+  ggplot(aes(x = pclass, y = age, fill = pclass)) +
+  geom_boxplot(alpha = 0.75)
+```
+
+```{r}
+# p.66
+# ヒストグラム
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  drop_na(age) %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(binwidth = 10, fill = "white", colour = "black") +
+  facet_grid(pclass ~ .)
+```
+
+```{r}
+# p.68
+# 散布図
+install.packages("tidyverse")
+library("tidyverse")
+
+qtr = as.numeric(time(UKgas))
+cnsmp = as.numeric(UKgas)
+
+tibble(qtr, cnsmp) %>%
+  filter(qtr >= 1970) %>%
+  ggplot(aes(x = qtr, y = cnsmp)) +
+  geom_point()  
+```
+
+```{r}
+# p.71
+# 折れ線グラフ
+install.packages("tidyverse")
+library("tidyverse")
+
+qtr = as.numeric(time(UKgas))
+cnsmp = as.numeric(UKgas)
+
+tibble(qtr, cnsmp) %>%
+  filter(qtr >= 1970) %>%
+  ggplot(aes(x = qtr, y = cnsmp)) +
+  geom_point() + 
+  geom_line()
+```
+
