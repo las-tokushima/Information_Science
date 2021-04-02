@@ -1,0 +1,206 @@
+# 2章 
+## COLUMN RとPythonを使ったグラフの作成
+
+### サンプルコード1
+
+#### R（p. 61）
+
+# Titanic号乗客生存状況データ　棒グラフ（割合）
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  select(pclass, survived) %>%
+  table() %>%
+  as.data.frame() %>%
+  ggplot(aes(x = pclass, y = Freq, fill = survived)) +
+  geom_bar(stat = "identity", alpha = 0.75, position = "fill") +
+  scale_y_continuous(labels = percent)
+
+#### Python（p. 62）
+
+# Titanic号乗客生存状況データ　棒グラフ（割合）
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+cross_survive = pd.crosstab(titanic['pclass'],titanic['survived'], normalize='index')
+cross_survive.plot.bar(stacked=True)
+plt.ylabel('Freq')
+
+
+
+### サンプルコード1-1
+
+#### R（p. 62）
+
+# Titanic号乗客生存状況データ　棒グラフ（実数）
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  select(pclass, survived) %>%
+  table() %>%
+  as.data.frame() %>%
+  ggplot(aes(x = pclass, y = Freq, fill = survived)) +
+  geom_bar(stat = "identity", alpha = 0.75)
+
+#### Python（p. 63）
+
+# Titanic号乗客生存状況データ　棒グラフ（実数）
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+cross_survive = pd.crosstab(titanic['pclass'],titanic['survived'])
+cross_survive.plot.bar(stacked=True)
+plt.ylabel('Freq')
+
+
+
+### サンプルコード2
+
+#### R（p. 64）
+
+# Titanic号客室クラス別年齢分布　箱ひげ図
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  drop_na(age) %>%
+  ggplot(aes(x = pclass, y = age, fill = pclass)) +
+  geom_boxplot(alpha = 0.75)
+
+#### Python（p. 65）
+
+# Titanic号客室クラス別年齢分布　箱ひげ図
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+titanic.boxplot(column=['age'],by='pclass')
+plt.ylabel('Age')
+plt.title('')
+
+
+
+### サンプルコード3
+
+#### R（p. 66）
+
+# Titanic号客室クラス別年齢分布　ヒストグラム
+install.packages("tidyverse")
+library("tidyverse")
+
+install.packages("scales")
+library("scales")
+
+install.packages("vcdExtra")
+library("vcdExtra")
+
+Titanicp %>%
+  drop_na(age) %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(binwidth = 10, fill = "white", colour = "black") +
+  facet_grid(pclass ~ .)
+
+#### Python（p. 66）
+
+# Titanic号客室クラス別年齢分布　ヒストグラム
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+titanic.hist(bins=10,by='pclass',column='age',layout=(3,1),sharex=True)
+plt.xlabel('Age')
+
+
+
+### サンプルコード4
+
+#### R（p. 67）
+
+# 英国におけるガス使用量　散布図
+install.packages("tidyverse")
+library("tidyverse")
+
+qtr = as.numeric(time(UKgas))
+cnsmp = as.numeric(UKgas)
+
+tibble(qtr, cnsmp) %>%
+  filter(qtr >= 1970) %>%
+  ggplot(aes(x = qtr, y = cnsmp)) +
+  geom_point()  
+
+#### Python（p. 68）
+
+# 英国におけるガス使用量　散布図 
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+df = pd.read_csv("UKgas.tsv", delim_whitespace=True, index_col='Year')
+df = df.loc[1970:, :]
+df = df.stack()
+date_index = pd.date_range('1970-01-01', '1986-12-31', freq='Q')
+df_time = pd.DataFrame(df.values, index=date_index, columns =['values'])
+df_time.plot(marker='o',linestyle='')
+
+
+
+### サンプルコード5
+
+#### R（p. 70）
+
+# 英国におけるガス使用量　折れ線グラフ
+install.packages("tidyverse")
+library("tidyverse")
+
+qtr = as.numeric(time(UKgas))
+cnsmp = as.numeric(UKgas)
+
+tibble(qtr, cnsmp) %>%
+  filter(qtr >= 1970) %>%
+  ggplot(aes(x = qtr, y = cnsmp)) +
+  geom_point() + 
+  geom_line()
+
+#### Python（p. 70）
+
+# 英国におけるガス使用量　折れ線グラフ
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+df = pd.read_csv("UKgas.tsv", delim_whitespace=True, index_col='Year')
+df = df.loc[1970:, :]
+df = df.stack()
+date_index = pd.date_range('1970-01-01', '1986-12-31', freq='Q')
+df_time = pd.DataFrame(df.values, index=date_index, columns =['values'])
+df_time.plot(marker='o',linestyle='-')

@@ -1,0 +1,299 @@
+# 付録B JupyterによるPythonの実行
+
+## B-4 Python速習
+
+### B-4-1 リスト 
+
+#### Python（p. 235）
+
+x =  [11, 18, 14, 16, 15, 19]
+x
+
+#### Python（p. 236）
+
+x[1]
+
+#### Python（p. 236）
+
+x[:2]
+
+#### Python（p. 236）
+
+x[1:3]
+
+#### Python（p. 237）
+
+x[::-1]
+
+#### Python（p. 237）
+
+print(x[1])
+print(x[:2])
+print(x[1:3])
+x[::-1]
+
+#### Python（p. 237）
+
+# % 演算子
+pi = 3.14
+print('pi = %.3f' % pi)
+
+#### Python（p. 237）
+
+# format
+print('{0} = {1}'.format('pi', pi))
+
+#### Python（p. 238）
+
+# f 文字列の利用
+age = 22
+# ｆ文字列に変数をブラケットで囲んで指定
+print(f'私は{age}歳です。')
+
+#### Python（p. 238）
+
+num = 1234567890
+
+# 3桁ごとにカンマを挿入
+print(f'{num:,}')
+
+#### Python（p. 238）
+
+# 小数点以下の桁数表示
+pi = 3.141
+
+# 小数点2位まで
+print(f'pi = ): {pi:.2f}')
+
+#### Python（p. 238）
+
+# 指定された桁数だけゼロを追加
+print(f'pi =  : {pi:.5f}')
+
+### B-4-2 辞書
+
+#### Python（p. 239）
+
+{'A':0, 'B':1, 'C':2}
+dic = {'A組':['太郎','花子'], 'B組':['次郎','菊子'],'C組':['三郎','松子']}
+dic
+
+#### Python（p. 239）
+
+dic['A組']
+
+
+#### Python（p. 239）
+
+for key,value in dic.items():
+    print(key,value)
+
+
+## B-5 関数
+
+### Python（p. 240）
+
+len(x)
+
+### Python（p. 241）
+
+sum(x)
+
+### Python（p. 241）
+
+sum(x) / len(x)
+
+## B-6 データサイエンスのためのライブラリ
+
+### B-6-1 numpy
+#### Python（p. 242）
+
+import numpy as np
+x = np.array([11, 18, 14, 16, 15, 19])
+x
+
+#### Python（p. 242）
+
+x.mean()
+
+### B-6-2 pandas
+#### Python（p. 243）
+
+import pandas as pd
+x = pd.Series([11, 18, 14, 16, 15, 19])
+x
+
+#### Python（p. 243）
+
+x.mean()
+
+## B-7 データフレーム
+
+### Python（p. 244）
+
+dat = pd.DataFrame({'X': [11, 18, 14, 16, 15, 19],
+                  'Y': ['A', 'A', 'B','B', 'C','C'],
+				    'Z': [0.2, 0.8, 0.4, 0.6, 0.5, 0.9]})
+dat
+
+### Python（p. 244）
+
+dat = pd.DataFrame({'X': [11, 18, 14, 16, 15, 19],
+                  'Y': ['A', 'A', 'B','B', 'C','C'],
+				    'Z': [0.2, 0.8, 0.4, 0.6, 0.5, 0.9]},
+                   index = ['あ','い','う','え','お','か'])
+dat
+
+### Python（p. 245）
+
+# 最初の3行と左から2列を抽出（ゼロ起算）
+dat.iloc[:3,:2]
+
+
+# 行と列のindexで指定（指定された行、列まで抽出）
+dat.loc[:'う',:'Y']
+
+
+# locの場合、インデックスが文字列のとき数値を添え字にできない
+dat.loc[1:2,:'Y'] # エラーとなる
+
+### Python（p. 246）
+
+dat.mean()
+
+
+### Python（p. 246）
+
+dat.groupby('Y').mean()
+
+
+## B-8 データ操作とグラフィックス
+### Python（p. 247）
+
+import matplotlib.pyplot as plt
+# Rのggplot2風に描画する
+plt.style.use('ggplot')
+import numpy as np
+# 確率関数を利用するためにscipyをロード
+from scipy.stats import norm
+X = np.arange(20, 80, 0.1)
+Y = norm.pdf(X, 50, 10)
+# ここで以下のようにしても描画されるが
+# plt.plot(X, Y)
+# 以下のような手順を踏んで描画するのが望ましい
+# 描画領域を準備
+fig = plt.figure()
+# 描画領域にプロット領域を確保
+ax = fig.subplots()
+# 描画する
+ax.plot(X, Y, color='r')
+# Jupyter以外の環境では以下が必要
+# plt.show()
+
+
+### Python（p. 248）
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+# plt.show()
+
+### Python（p. 248）
+
+titanic.info()
+
+### Python（p. 249）
+
+titanic.shape
+
+### Python（p. 249）
+
+titanic['survived'].value_counts()
+
+### Python（p. 250）
+
+titanic['age'].hist()
+
+### Python（p. 250）
+
+sns.countplot('sex', data=titanic, palette='rainbow')
+
+### Python（p. 251）
+
+sns.countplot('pclass', data=titanic, palette='rainbow')
+
+### Python（p. 251）
+
+sns.factorplot(x='pclass',y='age', hue='sex', data=titanic, palette='pastel')
+
+### Python（p. 252）
+
+sns.countplot('survived', data=titanic, hue='sex', palette='rainbow')
+
+### Python（p. 252）
+
+titanic.pivot_table(index="pclass", columns= "sex", values="survived")
+
+## B-9 map関数
+### Python（p. 253）
+
+{'A':1, 'B':2, 'C':3}
+
+### Python（p. 254）
+
+dat['Y'].map({'A':1, 'B':2, 'C':3})
+
+
+## B-10 関数の定義
+### Python（p. 254）
+
+def fun(x):
+    return x + 1 
+
+### Python（p. 254）
+
+dat['X'].map(fun)
+
+### Python（p. 255）
+
+dat[['X','Z']].apply(fun)
+
+### Python（p. 255）
+
+dat['X'].map(lambda x :x + 1)
+
+### B-10-1 met関数とstack関数
+#### Python（p. 256）
+
+#UKgasデータ
+import pandas as pd
+df = pd.read_csv("../data/UKgas.tsv", delim_whitespace=True)
+df = df.query('Year >= 1970')
+
+#### Python（p. 256）
+
+df = pd.melt(df, ['Year'])
+
+#### Python（p. 257）
+
+df.sort_values(['Year', 'variable'])
+
+#### Python（p. 257）
+
+df = pd.read_csv("../data/UKgas.tsv", delim_whitespace=True, index_col='Year')
+df = df.loc[1970:, :]
+df = df.stack()
+df
+
+#### Python（p. 258）
+
+df = pd.DataFrame(df, columns = ['values'])
+df
+
+## B-11 スクリプトファイルの保存とJupyterの終了
+### Python（p. 259）
+
+import os
+os.getcwd()
+

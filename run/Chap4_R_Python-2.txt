@@ -1,0 +1,442 @@
+# 4章 データの活用と手法の実践
+
+## 4-1 確率・統計の基礎
+
+### 4-1-3 推測統計学の基礎
+
+#### R（p. 113）
+
+x = seq(20, 80, by=0.2) 
+# 代入記号は <- としてもよい x <- seq(20, 80, by=0.2) と等価
+plot(x, dnorm(x, 50, 10), type="l", col="blue")
+
+#### Python（p. 115）
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import numpy as np
+from scipy.stats import norm
+X = np.arange(20, 80, 0.1)
+Y = norm.pdf(X, 50, 10)
+fig = plt.figure()
+ax = fig.subplots()
+ax.plot(X, Y, color='r')
+#plt.show()
+
+#### Python（p. 115）
+
+from scipy.stats import norm
+# 確率密度を返す
+print(norm.pdf(-1.96, 0, 1))
+# 分位点を返す
+print(norm.ppf(0.025, 0, 1))
+# 累積確率を返す
+print(norm.cdf(-1.96, 0, 1)) 
+
+## COLUMN Rを使ったランダムサンプリング
+
+#### R（p. 118）
+
+SampMean = numeric(length=10000)
+for(i in 1:10000){
+  # rnorm()は正規分布に従う乱数を返す
+  sample = rnorm(16, 6300, 1700)
+  # 乱数列の平均値を記録していく
+  SampMean[i] = mean(sample)
+}
+hist(SampMean)
+
+#### Python（p. 119）
+
+from scipy.stats import norm
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+SampMean = []
+for i in range(10000):
+    sample = norm.rvs(loc=6300, scale=1700, size=16)
+    SampMean.append(sample.mean())
+
+plt.hist(SampMean)
+# plt.show()
+
+### 4-1-4 統計的検定の基礎
+
+#### R（p. 128）
+
+# 2X2の行列を生成
+cross = matrix(c(10, 10, 26, 14), 2, 2) 
+# 行と列に名前を設定
+rownames(cross) = c("P", "N") 
+colnames(cross) = c("A", "B") 
+chisq.test(cross, correct=FALSE)
+
+#### Python（p. 128）
+
+import pandas as pd
+from scipy import stats
+df = pd.DataFrame([[10, 26],
+                   [10, 14]],
+                  index =['P', 'N'], columns=['A', 'B'])
+x2, p, _, _ = stats.chi2_contingency(df, correction=False)
+print(f'p-value = {p :.3f}')
+print(f'chi^2   = {x2:.2f}')
+
+#### R（p.132）
+
+before = c(0.1, 0.3, 0.3, 0.1, 0.2, 0.3, 0.6, 0.4, 0.2, 0.3) 
+after = c(1.1, 0.7, 0.6, 0.8, 1.3, 0.5, 0.8, 0.7, 0.9, 0.5) 
+t.test(before, after, paired=TRUE)
+
+#### Python（p. 132）
+
+from scipy import stats
+before = [0.1, 0.3, 0.3, 0.1, 0.2, 0.3, 0.6, 0.4, 0.2, 0.3]
+after = [1.1, 0.7, 0.6, 0.8, 1.3, 0.5, 0.8, 0.7, 0.9, 0.5]
+t, p = stats.ttest_rel(before, after)
+print(f't-value = {t :.4f}')
+print(f'p-value = {p :.6f}')
+
+#### R（p. 135）
+
+classA = c(54, 55, 52, 48, 50, 38, 41, 40, 53, 52) 
+classB = c(67, 63, 50, 60, 61, 69, 43, 58, 36, 29) 
+var.test(classB,classA)
+
+#### Python（p. 136）
+
+import numpy as np
+from scipy import stats
+classA = np.array([54, 55, 52, 48, 50, 38, 41, 40, 53, 52])
+classB = np.array([67, 63, 50, 60, 61, 69, 43, 58, 36, 29])
+# 分散の比を求める
+f = np.var(classB, ddof=1)/np.var(classA, ddof=1) 
+# 分母分子の自由度
+dfn = classA.size - 1
+dfd = classB.size - 1
+# F分布の累積分布
+p = 1 - stats.f.cdf(f, dfn, dfd) 
+print(f'f-value = {f :.4f}')
+print(f'p-value = {p :.4f}')
+
+#### R（p. 137）
+
+classA = c(54, 55, 52, 48, 50, 38, 41, 40, 53, 52) 
+classB = c(67, 63, 50, 60, 61, 69, 43, 58, 36, 29) 
+t.test(classB, classA, var.equal=TRUE)
+
+#### Python（p. 137）
+
+classA = [54, 55, 52, 48, 50, 38, 41, 40, 53, 52]
+classB = [67, 63, 50, 60, 61, 69, 43, 58, 36, 29]
+t, p = stats.ttest_ind(classB,classA)
+print(f't-value = {t :.4f}')
+print(f'p-value = {p :.4f}')
+
+#### R（p. 138）
+
+classA = c(54, 55, 52, 48, 50, 38, 41, 40, 53, 52) 
+classB = c(67, 63, 50, 60, 61, 69, 43, 58, 36, 29) 
+# Rの t.test関数はWelchがデフォルト 
+t.test(classB, classA)
+
+#### Python（p. 139）
+
+classA = [54, 55, 52, 48, 50, 38, 41, 40, 53, 52]
+classB = [67, 63, 50, 60, 61, 69, 43, 58, 36, 29]
+t, p = stats.ttest_ind(classB, classA, equal_var=False)
+print(f't-value = {t :.4f}')
+print(f'p-value = {p :.4f}')
+
+## 乱数を利用した検定
+
+#### R（p. 140）
+
+test = c( 54, 55, 52, 48, 50, 38, 41, 40, 53, 52, 67, 63, 50, 60, 61, 69, 43, 58, 36, 29)
+class = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) 
+test.diff = diff(by(test, class, mean)) 
+n = 10000 
+# 次のlapplyはRで繰り返しを行う関数 
+# by はデータに条件（ここでは1か0か）別の関数（ここでは平均値）を適用する関数 
+# sample関数は、指定されたベクトルからランダム抽出を行う 
+examples = unlist(lapply(1:n, function(x){diff(by(test,sample(class, length(class), FALSE),mean))}))
+# test.diffの値よりも大きい結果となった個数を求め、その割合を計算 
+(sum(abs(examples) > abs(test.diff)))/n
+
+#### Python（p. 141）
+
+import numpy as np
+import random
+test = np.array([54, 55, 52, 48, 50, 38, 41, 40, 53, 52, 67, 63, 50, 60, 61, 69, 43, 58, 36, 29])
+cls = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+test_diff = np.mean(test[np.where(cls==0)]) - np.mean(test[np.where(cls==1)])
+n = 10000
+examples = []
+for i in range(n):
+    grp = np.random.choice(cls, size=cls.size, replace=False)
+    grp_dif = np.mean(test[np.where(grp==0)]) - np.mean(test[np.where(grp==1)])
+    examples.append(grp_dif)
+
+y = np.sum(np.abs(examples) > np.abs(test_diff))/n
+print(y)
+
+### 4-1-5 ROC解析と推論の評価
+
+#### R（p. 145）
+
+install.packages("ROCR") 
+library(ROCR)
+
+Point = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100) 
+Class = c(0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1) 
+pred = prediction(Point, Class) 
+perf = performance(pred, "tpr", "fpr") 
+plot(perf, col="Red", lwd = 2)
+auc = performance(pred, "auc") 
+as.numeric(auc@y.values)
+
+#### Python（p. 146）
+
+from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_auc_score
+import matplotlib.pyplot as plt
+points = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+cls = [0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1]
+fpr, tpr, thresholds = roc_curve(cls, points)
+plt.plot(fpr, tpr, marker='o')
+plt.xlabel('FPR: False positive rate')
+plt.ylabel('TPR: True positive rate')
+plt.grid()
+print(roc_auc_score(cls, points))
+
+## 4-2 モデリング
+
+### 4-2-3 単回帰分析
+
+#### R（p. 156）
+
+# データ表示 
+cars
+
+#### R（p. 157）
+
+# 散布図を描画
+plot(cars)
+
+#### R（p. 157）
+
+# 相関係数を計算 
+cor(cars$speed, cars$dist)
+
+#### R（p. 158）
+
+# 単回帰分析を実行 
+result <- lm(dist ~ speed, data=cars) 
+# 単回帰曲線の表示 
+plot(cars) 
+abline(result, col="red")
+
+#### R（p. 159）
+
+# 決定係数などを表示 
+summary(result)
+
+#### R（p. 161）
+
+# 現在の作業フォルダを確認 
+getwd()
+# 作業フォルダの変更 
+# Macの場合（Windowsならば C:/Users/username/Documentsなど）
+setwd("/Users/username/Documents") 
+# 変更後の作業フォルダを確認 
+getwd()
+
+#### R（p. 162）
+
+# csvファイルからデータの読み込み 
+# GitHub レポジトリの場合、dataフォルダにファイルがある
+cars_data <- read.csv("../data/cars.csv", header=TRUE, row.names=1) 
+# 格納されたデータの表示 
+cars_data
+
+#### Python（p. 163）
+
+# ライブラリの読み込み
+import numpy as np
+import pandas as pd 
+import matplotlib.pyplot as plt 
+plt.style.use('ggplot')
+
+# csvファイルよりデータ読み込み
+df = pd.read_csv('../data/cars.csv') 
+#'/users/username/documents' は自分のコンピュータ環境にあわせる
+
+#### Python（p. 163）
+
+# pandasを使った散布図の作成
+df.plot.scatter('speed', 'dist')
+# plt.show()
+
+#### Python（p. 164）
+
+df.corr()
+
+#### Python（p. 164）
+
+from sklearn.linear_model import LinearRegression 
+# 説明変数に値を代入
+x = df[['speed']]
+# 目的変数に値を代入
+y = df[['dist']] 
+# 分析モデルとして回帰分析を指定
+model = LinearRegression() 
+# x,yをもとに回帰分析実行
+lin_reg = model.fit(x, y) 
+
+#### Python（p. 164）
+
+# 散布図描画
+df.plot.scatter('speed', 'dist')
+# 単回帰直線描画設定
+plt.plot(x, lin_reg.predict(x), linestyle="solid", color="red") 
+
+#### Python（p. 165）
+
+# 単回帰変数，切片，単回帰方程式，および，決定変数の表示
+from sklearn.metrics import r2_score
+print('単回帰方程式の単回帰変数 w1: %.3f' % model.coef_) 
+print('単回帰方程式の切片 w2: %.3f' % model.intercept_) 
+print('y= %.3fx + %.3f' % (model.coef_, model.intercept_)) 
+# print('決定係数 R^2： ', model.score(x, y))
+y_pred = model.predict(x)
+r2 = r2_score(y, y_pred)
+print('決定係数 R^2：%.3f' % r2)
+
+### 4-2-4 クラスタ分析
+
+#### R（p. 175）
+
+library(cluster) 
+ruspini
+
+#### R（p. 176）
+
+# 非類似度を計算 
+ruspini-distance <- dist(ruspini)
+
+#### R（p. 177）
+
+# 階層的クラスタリングを実行 
+ruspini_result <- hclust(ruspini_distance, methodxs="single") 
+# 階層的クラスタリングの結果を樹形図として描画 
+plot(ruspini_result)
+
+#### R（p. 178）
+
+# 色分けするため樹形図よりクラスタを4つに分類 
+color4 <- cutree(ruspini_result,k=4) 
+#クラスタを色分けした樹形図を表示 
+plot(ruspini, pch=20, asp=1, col=color4)
+
+#### Python（p. 179）
+
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+import pandas as pd
+import numpy as np
+
+# csvファイルからデータの読み込み
+df = pd.read_csv('../data/ruspini.csv')
+#'/users/username/documents/' は自分のコンピュータ環境にあわせて変更
+
+#### Python（p. 180）
+
+# pandasを使った散布図の作成
+df.plot.scatter('x', 'y')
+# plt.show()
+
+#### Python（p. 180）
+
+# ライブラリの読み込み
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+
+# 階層的クラスタリング実行
+linkage_result = linkage(df, method='single', metric='euclidean') 
+
+#### Python（p. 181）
+
+# 縦軸でカットする値の設定
+threshold = 20 
+# 描画の設定
+# plt.figure(figsize=(16, 9))
+# 樹形図の設定
+_ = dendrogram(linkage_result, color_threshold=threshold)
+# plt.show()
+
+#### Python（p. 182）
+
+cluster = fcluster(linkage_result, threshold, criterion='distance')
+print(cluster)
+df['cluster'] = cluster
+col = df.cluster.map({1:'r', 2:'b', 3:'g', 4:'orange'})
+df.plot.scatter('x', 'y', c=col)
+
+#### R（p. 186）
+
+# ライブラリ取り込み 
+library(cluster) 
+# データ表示 
+ruspini
+
+#### R（p. 187）
+
+#  k　-平均法実行
+km <- kmeans(ruspini,4)
+# 実行結果のクラスタ番号の確認 
+km$cluster 
+# クラスタ番号をもとに散布図を色分けして描画 
+plot(ruspini, pch=20, asp=1, col=km$cluster)
+
+#### R（p.188）
+
+#  k　-平均法を1000回実行
+km <- kmeans(ruspini,4, iter.max = 1000) 
+# クラスタ番号をもとに散布図を色分けして描画 
+plot(ruspini, pch=20, asp=1, col=km$cluster)
+
+#### Python（p. 188）
+
+# ライブラリの読み込み
+import numpy as np
+import pandas as pd 
+from sklearn.cluster import KMeans 
+
+# csvファイルからデータ読み込み
+df = pd.read_csv('../data/ruspini.csv')
+`
+#### Python（p. 189）
+
+` 散布図描画の設定
+df.plt.scatter('x', 'y')
+# plt.show()
+`
+#### Python（p.189）
+
+# ライブラリの読み込み
+from sklearn.cluster import KMeans
+# デフォルトのアルゴリズムは k-means++
+kmeans_mod = KMeans(n_clusters=4) 
+cluster = kmeans_mod.fit_predict(df) 
+# クラスター番号の確認
+print( cluster )
+
+#### Python（p.190）
+
+# クラスター番号をデータフレームに追加
+df['cluster'] = cluster
+# 色分けするのための情報を列として追加
+col = df.cluster.map({0:'r', 1:'b', 2:'g', 3:'orange'})
+# クラスターごとに色分けした散布図を作成
+df.plot.scatter('x', 'y', c=col)
+# plt.show()
+

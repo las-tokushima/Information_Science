@@ -1,0 +1,74 @@
+# 付録A RStudioによるRの実行
+
+## A-4 スクリプトの記述
+
+### R（p. 220）
+
+# 標本分散と不偏分散を確認する
+# xにデータを代入
+x <- c(60, 65, 70, 80, 90)
+
+# サンプルサイズをnに代入
+n <- length(x)
+
+# 算術平均値をmに代入
+m <- mean(x)
+
+# 偏差をdevに代入
+dev <- x - m
+
+# 標本分散
+# 偏差の2乗の総和をサンプルサイズで除す
+(sum(dev * dev) / n)
+
+# 不偏分散
+ # 偏差の2乗の総和を(サンプルサイズ - 1)で除す
+(sum(dev * dev) / (n - 1))
+
+# R組み込みのvar関数
+var(x)
+
+## A-6 グラフの描画
+
+### R（p. 224）
+
+# ペアプロット描画
+
+# パッケージコレクション"tidyverse"のインストール
+install.packages("tidyverse")
+# "tidyverse"の読み込み
+library("tidyverse")
+
+# ペアプロット作成支援パッケージ"GGally"をインストール
+install.packages("GGally")
+# "GGally"の読み込み
+library("GGally")
+
+# パイプ演算子を使ってirisをggpairs()に渡す
+iris %>%
+  # Speciesで塗り分け，描画する
+  ggpairs(aes_string(colour="Species", alpha = 0.5))
+
+### R（p. 225）
+
+# ネットワーク図描画
+
+# パッケージコレクション"tidyverse"のインストール
+install.packages("tidyverse")
+# "tidyverse"の読み込み
+library("tidyverse")
+
+# ネットワーク図作成支援パッケージ"qgraph"をインストール
+install.packages("qgraph")
+# "qgraph"の読み込み
+library("qgraph")
+
+# パイプ演算子を使ってirisをselect()に渡す
+iris %>%
+  # select関数で変数Speciesを除く
+  select(-Species) %>%
+  # 変数間の相関係数を計算する
+  cor() %>%
+  # ネットワーク図を描画する
+  qgraph(edge.labels = T)
+
