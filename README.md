@@ -3,27 +3,27 @@ https://gihyo.jp/dp/ebook/2021/978-4-297-12040-5
 
 2章R
 
-https://github.com/las-tokushima/Information_Science/blob/main/Chap2.Rmd
+https://github.com/las-tokushima/Information_Science/blob/main/R/Chap2.Rmd
 
 2章Python
 
-https://github.com/las-tokushima/Information_Science/blob/main/Chap2.iphnb
+https://github.com/las-tokushima/Information_Science/blob/main/Python/Chap2.iphnb
 
 
 4章R
 
-https://github.com/las-tokushima/Information_Science/blob/main/Chap4.Rmd
+https://github.com/las-tokushima/Information_Science/blob/main/R/Chap4.Rmd
 
 4章Python
 
-https://github.com/las-tokushima/Information_Science/blob/main/Chap4-1.ipynb
+https://github.com/las-tokushima/Information_Science/blob/main/Python/Chap4-1.ipynb
 
 UKgas.tsv
 
-https://github.com/las-tokushima/Information_Science/blob/main/UKgas.tsv
+https://github.com/las-tokushima/Information_Science/blob/main/R/UKgas.tsv
 
 
 Appendix A
 
-https://github.com/las-tokushima/Information_Science/blob/main/AppA.Rmd
+https://github.com/las-tokushima/Information_Science/blob/main/R/AppA.Rmd
 
