@@ -7,7 +7,7 @@ https://github.com/las-tokushima/Information_Science/blob/main/Chap2.Rmd
 
 2章Python
 
-https://github.com/las-tokushima/Information_Science/blob/main/Chap2.iphnb
+https://github.com/las-tokushima/Information_Science/blob/main/Chap2.ipynb
 
 
 4章R
